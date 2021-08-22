@@ -493,29 +493,29 @@ void reshade::runtime::on_present()
 
 #if RESHADE_ADDON
 	// Detect high network traffic
-	//static int cooldown = 0, traffic = 0;
-	//if (cooldown-- > 0)
-	//{
-	//	traffic += g_network_traffic > 0;
-	//}
-	//else
-	//{
-	//	const bool was_enabled = addon::enabled;
-	//	addon::enabled = traffic < 10;
-	//	traffic = 0;
-	//	cooldown = 60;
+	static int cooldown = 0, traffic = 0;
+	if (cooldown-- > 0)
+	{
+		traffic += g_network_traffic > 0;
+	}
+	else
+	{
+		const bool was_enabled = addon::enabled;
+		addon::enabled = traffic < 10;
+		traffic = 0;
+		cooldown = 60;
 
-	//	if (addon::enabled != was_enabled)
-	//	{
-	//		if (was_enabled)
-	//			_backup_texture_semantic_bindings = _texture_semantic_bindings;
+		if (addon::enabled != was_enabled)
+		{
+			if (was_enabled)
+				_backup_texture_semantic_bindings = _texture_semantic_bindings;
 
-	//		for (const auto &info : _backup_texture_semantic_bindings)
-	//		{
-	//			update_texture_bindings(info.first.c_str(), addon::enabled ? info.second : api::resource_view { 0 });
-	//		}
-	//	}
-	//}
+			for (const auto &info : _backup_texture_semantic_bindings)
+			{
+				update_texture_bindings(info.first.c_str(), addon::enabled ? info.second : api::resource_view { 0 });
+			}
+		}
+	}
 #endif
 
 	// Reset frame statistics
